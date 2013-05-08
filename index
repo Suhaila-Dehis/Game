@@ -1,0 +1,280 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<title>pixi.js example 1</title>
+	<button onclick="JavaScript:window.close()">close</button>
+	<button onclick="JavaScript:alert('pause');">pause</button>
+	<button onclick="JavaScript:document.getElementById('clip').muted = true;">Sound OFF</button>
+	<button onclick="JavaScript:document.getElementById('clip').muted = false;">Sound ON</button>
+	<input type="button" value="Play Again" onClick="window.location.href=window.location.href">
+	<style>
+		body {
+			margin: 0;
+			padding: 0;
+			background-image: url("background.JPg"); 
+            background-repeat: no-repeat;
+            background-size: 100%;	
+		}
+	</style>
+	<script src="pixi.js"></script>
+	<script src="../../src/pixi/renderers/WebGLRenderer.js"></script>
+</head>
+<body>
+	<audio src="clip.wav" autoplay="autoplay" repeat='all'  id='clip' >
+  <audio src="explosion-01.wav"  id='exp' >
+	    <canvas id="myCanvas" height="800" width="500">
+		Your browser do not support HTML5
+	    </canvas>
+	<script id="game">
+
+	    // create an new instance of a pixi stage
+	    var stage = new PIXI.Stage;
+	    // create a renderer instance
+	    var renderer = PIXI.autoDetectRenderer(1300, 640);
+	    // add the renderer view element to the DOM
+	    document.body.appendChild(renderer.view); 
+	    requestAnimFrame( animate );
+	    var texture = PIXI.Texture.fromImage("bunny.png");
+	    // create a new Sprite using the texture
+	    var jet = new PIXI.Sprite(texture);
+      var texture1 = PIXI.Texture.fromImage("bunnnny.png");
+      var enemy = PIXI.Texture.fromImage("enemy2.png");
+      var ground = PIXI.Texture.fromImage("wood.jpg");
+      var gameover = PIXI.Texture.fromImage("over.png");
+      var gover=new PIXI.Sprite(gameover);
+     	   gover.anchor.x = 0.5;
+	       gover.anchor.y = 0.5;
+	       gover.position.x=600;
+         gover.position.y=400;
+	   var moveback=[];
+	   for(var i = 0 ; i <10; i ++)
+	   {
+         moveback[i]=new PIXI.Sprite(ground);
+         moveback[i].anchor.x = 0.5;
+	       moveback[i].anchor.y = 0.5;
+	       moveback[i].position.x=600;
+         moveback[i].position.y-=790*i;
+	       stage.addChild(moveback[i]);
+	   }
+  	 var jeet=[];
+  	 var jeet2=[];
+     var boom=[];
+     var bullets=[];
+     var bullets1=[];
+  	 var fire = PIXI.Texture.fromImage("bullet.png");
+  	 var pew = PIXI.Texture.fromImage("PewPew1.png");
+  	 var exp = PIXI.Texture.fromImage("EMP.png");
+  	 var emp=new PIXI.Sprite(exp);
+  	 emp.anchor.x = 0.5;
+  	 emp.anchor.y = 0.5;
+     /////////////////// falling bullets ////////////////////////////
+     for(var i = 0 ; i <100; i ++)
+	   {
+         bullets[i]=new PIXI.Sprite(fire);
+         bullets[i].anchor.x = 0.5;
+	       bullets[i].anchor.y = 0.5;
+	       bullets[i].position.x=(600*(Math.random()))+300;
+         bullets[i].position.y-=100*i;
+	       stage.addChild(bullets[i]);
+	   } 
+     ////////////////Enemies for the 1st level //////////////////////
+	for (i=0;i<18;i++){
+    	   jeet[i]= new PIXI.Sprite(texture1);
+    	   jeet[i].anchor.x = 0.5;
+    	   jeet[i].anchor.y = 0.5;
+    	   jeet[i].position.x=(500*(Math.random()))+400;
+         jeet[i].position.y-=100*2*i;
+    	   stage.addChild(jeet[i]);
+	   }
+     ///////////////// Enemies for the 2nd level ////////////////////
+	   for (i=0;i<18;i++){
+	   jeet2[i]= new PIXI.Sprite(enemy);
+	   jeet2[i].anchor.x = 0.5;
+	   jeet2[i].anchor.y = 0.5;
+	   jeet2[i].position.x=(500*(Math.random()))+400;
+     jeet2[i].position.y-=100*(1+i);
+	   stage.addChild(jeet2[i]);
+	   }
+	////////////////////adding the jet here ////////////////////////
+	jet.anchor.x = 0.5;
+	jet.anchor.y = 0.5;
+	jet.position.x =500;
+	jet.position.y=500;
+	stage.addChild(jet);
+    for(var i =0;i<10;i++)
+      	   	{
+	      	    boom[i] = new PIXI.Sprite(pew);
+	            boom[i].anchor.x = 0.5;
+  		        boom[i].anchor.y = 0.5;
+  		        boom[i].position.x=(jet.position.x);
+		       // stage.addChild(boom[i]);
+		    }
+var press=1;
+var flag=1;
+	/////////////// Here the fighting jet moves according to the keyboard ////////////
+document.addEventListener('keydown', function(event) {
+    if(event.keyCode == 37) {
+        //alert('Left was pressed');
+        if(jet.position.x>350)
+	        {
+	        	jet.position.x-=30;
+	        }
+    }
+      	 else if(event.keyCode == 39) {
+        //alert('Right was pressed');
+     	  if(jet.position.x<850)
+	        {
+	           jet.position.x+=30;
+	        }
+    }
+           // ----up arrow---- //	
+      	 else if(event.keyCode == 40) {
+      	  if(jet.position.y<600)
+	        { 
+	        	jet.position.y+=30;
+	        }
+    }
+        //------down arrow---------//
+      	 else if(event.keyCode == 38) {
+       	  if(jet.position.y>0)
+           {
+        	jet.position.y-=30;
+           }
+    }
+      	 else if((event.keyCode == 32)&&(flag=1)) {
+      	   	//alert('boom');
+		    for(var i = 0; i<5;i++)
+		    {
+		        boom[i] = new PIXI.Sprite(pew);
+	          boom[i].anchor.x = 0.5;
+		        boom[i].anchor.y = 0.5;
+		        boom[i].position.x=(jet.position.x);
+		        boom[i].position.y=(jet.position.y)-100*i;
+            boom[i].position.y-=2;
+            stage.addChild(boom[i]);
+      		}
+    }
+         else if(event.keyCode == 80) {
+       		 alert('pause');
+    }
+           else if(event.keyCode == 77) {
+           	if(press==1)
+           	{
+       		    document.getElementById('clip').muted = true;
+       		    press=0;
+       	    }
+       	    else if(press==0){
+       	   	  document.getElementById('clip').muted = false;
+               press=1;
+       	   }
+        
+    }
+        else if(event.keyCode == 27) {
+        window.close();
+    }
+    //---------------------------Animate the scene --------------
+});
+////////////////////////////////////////////////////////////////////
+
+var score = 0;
+
+
+//////////////////////collide function///////////////////////////
+function isCollide(a, b) {
+    return!(
+        ((a.position.y + (a.height/2)) < (b.position.y))||
+        (a.position.y > (b.position.y + (b.height/2))) ||
+        ((a.position.x + (a.width/2)) < b.position.x) ||
+        (a.position.x > (b.position.x + (b.width/2)))
+    );
+}
+/////////////////// Animate function ////////////////////////////
+	function animate() {
+	    requestAnimFrame( animate );
+        for(var i = 0; i<18;i++)
+	        {
+	         jeet[i].position.y+=2;
+	        }
+        for(var i = 0; i<10;i++)
+	        {
+	         moveback[i].position.y+=1;
+	        }
+        for(var i =0 ; i <5;i++)
+  	      {
+  	      	boom[i].position.y-=30;
+  	      }
+        for(var i = 0; i<100;i++)
+  	      {
+  	       bullets[i].position.y+=2;
+  		    }
+		  for(var i = 0 ; i <8;i++)
+	      {
+	         var collision1 = isCollide(bullets[i],jet);
+	      	if (collision1)
+	      	{
+	      		  emp.anchor.x=0.5;
+	      	  	emp.anchor.y=0.5;
+	      	  	emp.position.x=jet.position.x;
+	      		  emp.position.y=jet.position.y; 
+	      	    flag=0;
+	      		  stage.removeChild(jet);
+      		    stage.addChild(emp);
+      		    stage.addChild(gover);
+	      	}
+	      }
+      
+      for(var i = 0 ; i <8;i++)
+      {
+         var collision2 = isCollide(jeet[i],jet);
+      	if (collision2)
+      	{
+      		emp.anchor.x=0.5;
+      		emp.anchor.y=0.5;
+      		emp.position.x=jet.position.x;
+      		emp.position.y=jet.position.y;
+      		flag=0;
+          stage.removeChild(jet);
+      		stage.addChild(emp);
+      		stage.addChild(gover);
+      	}
+      }
+      for(var i = 0 ; i <18;i++)
+      {
+      	for(var j = 0 ; j<5;j++){
+         var collision3 = isCollide(jeet[i],boom[j]);
+		      	if (collision3)
+		      	{
+		      		stage.removeChild(jeet[i]);
+              score+=100;
+		      	}
+            }
+      }
+        for(var i = 0 ; i <18;i++)
+        {
+          for(var j = 0 ; j<5;j++){
+           var collision3 = isCollide(jeet2[i],boom[j]);
+                if (collision3)
+                {
+                  stage.removeChild(jeet2[i]);
+                  score+=200;
+                }
+              }
+        }
+         setTimeout(function()
+          {
+            if(flag==1){
+              alert('You passed Level 1 ');
+                for(var i = 0; i<18;i++)
+                    {
+                     jeet2[i].position.y+=2;
+                    }
+                }
+          },10000);
+	      renderer.render(stage);
+	}
+	  myclip=document.getElementById("clip");
+    myclip.loop=true;
+    myexp=document.getElementById("exp");
+</script>
+	</body>
+</html>
